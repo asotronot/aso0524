@@ -52,7 +52,7 @@ public class Checkout {
             if (isChargeableDay(date, tool)) {
                 days++;
             }
-            date = date.plusDays(1); // Increment the date by one day
+            date = date.plusDays(1);
         }
         return days;
     }
