@@ -26,17 +26,17 @@ public class Checkout {
 
     public RentalAgreement processCheckout() {
         int chargeDays = countDaysOfRentalCharge(checkoutDate, numberOfRentalDays, tool);
-        double preDiscountCharge = chargeDays * tool.getDailyRentalCharge();
+        double preDiscountCharge = chargeDays * tool.getToolType().getDailyRentalCharge();
         double discountAmount = preDiscountCharge * discountPercent / HUNDRED;
         double finalCharge = preDiscountCharge - discountAmount;
 
         return new RentalAgreement(
                 tool.getToolCode(),
-                tool.getToolType(),
+                tool.getToolType().getToolType(),
                 tool.getToolBrand(),
                 numberOfRentalDays,
                 checkoutDate,
-                tool.getDailyRentalCharge(),
+                tool.getToolType().getDailyRentalCharge(),
                 chargeDays,
                 preDiscountCharge,
                 discountPercent,
@@ -62,16 +62,16 @@ public class Checkout {
         boolean isWeekend = dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
         boolean isHoliday = isHoliday(date);
 
-        if (!tool.isHoliday() && isHoliday && isWeekend) {
+        if (!tool.getToolType().isChargedOnHoliday() && isHoliday && isWeekend) {
             return false;
         }
-        else if (!tool.isWeekend() && isWeekend && isHoliday) {
+        else if (!tool.getToolType().isChargedOnWeekend() && isWeekend && isHoliday) {
             return false;
         }
         else {
-            return (tool.isWeekday() && !isWeekend) ||
-                    (tool.isWeekend() && isWeekend) ||
-                    (tool.isHoliday() && isHoliday);
+            return (tool.getToolType().isChargedOnWeekday() && !isWeekend) ||
+                    (tool.getToolType().isChargedOnWeekend() && isWeekend) ||
+                    (tool.getToolType().isChargedOnHoliday() && isHoliday);
         }
     }
 
